@@ -3,7 +3,8 @@
 .optionTable th,.optionTable td{white-space:nowrap}.optionTable th[colspan]{text-align:center}.optionTable .cp{font-weight:750;color:#f3cb83}.optionCompare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.compareBox{padding:15px;border:1px solid #33445e;border-radius:12px;background:#19263a}.compareRow{display:grid;grid-template-columns:62px 1fr 90px;align-items:center;gap:10px;margin:9px 0}.compareTrack{height:12px;background:#2b374b;border-radius:20px;overflow:hidden}.compareFill{height:100%;border-radius:20px}.compareTitle{font-weight:700;margin-bottom:12px}.pos{color:#69d7b1}.neg{color:#f38c90}@media(max-width:800px){.optionCompare{grid-template-columns:1fr}.optionTable{font-size:12px}}
 
 .referenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}.referenceCard{border:1px solid #33445e;border-radius:12px;background:#19263a;padding:14px}.referenceCard h3{margin:0 0 9px;font-size:14px}.referenceCard p{margin:6px 0;font-size:13px;line-height:1.7}.referenceVerdict{font-size:20px;font-weight:750;margin:8px 0}.referenceTable th,.referenceTable td{white-space:nowrap}.referenceTable td:first-child{font-weight:650}.referenceMuted{color:#9cabc0}.referenceNote{font-size:12px;color:#aebbd0;line-height:1.8;margin-top:10px}@media(max-width:800px){.referenceGrid{grid-template-columns:1fr}}
-</style></head><body><div class="wrap"><header><div><div class="sub">TAIWAN FUTURES · POSITION INTELLIGENCE</div><h1>台指期籌碼分析儀表板 V8｜法人多空籌碼參考</h1><div class="sub">以你的原始 Excel 歷史資料建立 · 多空未平倉 / 每日變化 / 結算週期</div></div><span class="badge">官方資料連線版 · 資料依期交所公布</span></header>
+ .referenceStep{border-top:1px solid #33445e;padding:12px 0}.referenceStep p{font-size:13px;line-height:1.7;color:#b7c5d8;margin:8px 0 0}.referenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.referenceCard{padding:17px;background:#19263a;border:1px solid #33445e;border-radius:12px}.referenceCard h3{margin:0 0 12px;font-size:16px}.referenceVerdict{font-size:17px;font-weight:700;color:#f3cb83;margin-top:8px}.referenceNote,.referenceMuted{font-size:12px;color:#aebed1;line-height:1.8}.referenceTable{width:100%;font-size:12px}@media(max-width:800px){.referenceGrid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><header><div><div class="sub">TAIWAN FUTURES · POSITION INTELLIGENCE</div><h1>台指期籌碼分析儀表板 V9｜法人多空籌碼參考</h1><div class="sub">以你的原始 Excel 歷史資料建立 · 多空未平倉 / 每日變化 / 結算週期</div></div><span class="badge">官方資料連線版 · 資料依期交所公布</span></header>
 <div class="notice">開啟網頁時會自動讀取官方歷史資料；若連線失敗，可按「取得官方最新資料」重試。歷史資料與新資料不會跨缺漏日期直接計算每日變化；選擇權官方資料依 CALL／PUT 分開呈現，不混合計算；原 Excel 選擇權資料僅供舊版歷史參考。</div>
 <section class="panel"><div class="toolbar"><button id="loadLive" style="background:#286c65;border-color:#409d90">取得官方最新資料</button><button id="historyMode">查看原 Excel 歷史</button><label class="muted">官方歷史範圍 <select id="historyDays"><option value="30">近 1 個月</option><option value="90" selected>近 3 個月</option><option value="180">近 6 個月</option></select></label><span id="liveStatus" class="sub">準備自動讀取官方資料…</span></div><div class="sub" style="margin-top:9px">開啟網頁時自動讀取官方資料，也可手動重新整理；每日背景擷取是否成功，仍取決於 Apps Script 排程。</div></section>
 <section class="panel"><div class="toolbar"><strong>商品</strong><button class="tab active" data-product="大台">大台 TX</button><button class="tab" data-product="小台">小台 MTX</button><button class="tab" data-product="選擇權">選擇權 C／P</button><button class="tab" data-product="總表">法人總表</button><span style="flex:1"></span><label class="muted">法人 <select id="actor"><option value="foreign">外資</option><option value="self">自營商</option><option value="trust">投信</option></select></label><label class="muted">截至 <select id="date"></select></label></div><div class="sub" id="coverage" style="margin-top:12px"></div></section>
@@ -17,7 +18,7 @@
 <p class="sub">同一交易日分開比較買權（CALL／C）及賣權（PUT／P）；買方、賣方未平倉口數及契約金額皆保留。每日變化為相鄰交易日的未平倉差額，並非當日新開倉量。</p>
 <div class="scroll"><table class="optionTable"><thead><tr><th rowspan="2">類型</th><th colspan="2">買方未平倉</th><th colspan="2">賣方未平倉</th><th colspan="2">相較前交易日</th></tr><tr><th>口數</th><th>契約金額（千元）</th><th>口數</th><th>契約金額（千元）</th><th>買方口數變化</th><th>賣方口數變化</th></tr></thead><tbody id="optionSummary"></tbody></table></div>
 <div id="optionCompare" class="optionCompare"></div>
-<section id="referenceSection" style="margin-top:22px"><h2>法人多空籌碼參考｜SC／SP → BC／BP → 期貨</h2><p class="sub">依目前選擇的日期與法人，對照未平倉「日變化」。正值＝部位增加；負值＝部位減少。僅供觀察，不代表實際買賣訊號。</p><div id="referenceResult"></div></section>
+<section id="referenceSection" style="margin-top:22px"><h2>法人選擇權籌碼觀察｜先 SC／SP，再 BC／BP</h2><p class="sub">自營商與外資分開觀察，不混合口數。以下依老師文件提示的比較順序整理；方向、組合與避險文字為系統輔助推論，並非老師原始結論。使用相鄰交易日未平倉變化，非當日成交或新開倉。</p><div id="referenceResult"></div></section>
 <h2 style="margin-top:28px">每日選擇權籌碼明細</h2><p class="sub">與 Excel 一樣，每個交易日依序列出 C、P；可透過上方「法人」切換外資、自營商或投信。</p>
 <div class="scroll"><table class="optionTable"><thead><tr><th>日期</th><th>C／P</th><th>買方口數</th><th>買方契約金額（千元）</th><th>賣方口數</th><th>賣方契約金額（千元）</th><th>買方日變化</th><th>賣方日變化</th></tr></thead><tbody id="optionHistory"></tbody></table></div>
 <p id="optionFootnote" class="small muted"></p>
@@ -33,34 +34,29 @@ function optionDiffClass(n){return n==null?'':n<0?'neg':n>0?'pos':''}
 function optionPair(day,actor){const r=DATA.選擇權.find(x=>x.date===day);return r?{C:r.C?.[actor],P:r.P?.[actor]}:null}
 function renderReference(r,prev,valid,actor){
  const host=$('referenceResult');
- const cpNow={BC:r.C?.[actor]?.long,SC:r.C?.[actor]?.short,BP:r.P?.[actor]?.long,SP:r.P?.[actor]?.short};
- const cpPrev={BC:prev?.C?.[actor]?.long,SC:prev?.C?.[actor]?.short,BP:prev?.P?.[actor]?.long,SP:prev?.P?.[actor]?.short};
- const delta={};
- for(const k of ['BC','SC','BP','SP'])delta[k]=valid&&Number.isFinite(cpNow[k])&&Number.isFinite(cpPrev[k])?cpNow[k]-cpPrev[k]:null;
- const hasOptions=Object.values(delta).every(Number.isFinite);
- const rows=['SC','SP','BC','BP'].map(k=>`<tr><td>${k}</td><td>${optionNum(cpNow[k])}</td><td class="${optionDiffClass(delta[k])}">${optionDiff(delta[k])}</td></tr>`).join('');
- const sellScore=hasOptions?delta.SP-delta.SC:null;
- const buyScore=hasOptions?delta.BC-delta.BP:null;
- const sellSignal=sellScore==null?'資料不足':sellScore>0?'相對偏多':sellScore<0?'相對偏空':'無明顯差異';
- const buySignal=buyScore==null?'資料不足':buyScore>0?'相對偏多':buyScore<0?'相對偏空':'無明顯差異';
- const same=(a,b)=>a!==0&&b!==0&&Math.sign(a)===Math.sign(b);
- let verdict='資料不足',detail='缺少相鄰交易日的完整 CALL／PUT 資料，暫不推算方向。';
- if(hasOptions){
-  if(sellScore===0&&buyScore===0){verdict='方向不明';detail='SC／SP 與 BC／BP 的相對增減皆相同。';}
-  else if(same(sellScore,buyScore)){verdict=sellScore>0?'選擇權相對偏多':'選擇權相對偏空';detail='賣方與買方的相對部位變化方向一致；仍無法據此認定是新開倉或特定避險組合。';}
-  else{verdict='選擇權訊號分歧';detail='賣方與買方相對變化方向不一致，或其中一側無差異；不做單一多空判定。';}
+ const labels={foreign:'外資',self:'自營商'};
+ function analyze(a){
+  const now={BC:r.C?.[a]?.long,SC:r.C?.[a]?.short,BP:r.P?.[a]?.long,SP:r.P?.[a]?.short};
+  const before={BC:prev?.C?.[a]?.long,SC:prev?.C?.[a]?.short,BP:prev?.P?.[a]?.long,SP:prev?.P?.[a]?.short};
+  const d={};for(const k of ['BC','SC','BP','SP'])d[k]=valid&&Number.isFinite(now[k])&&Number.isFinite(before[k])?now[k]-before[k]:null;
+  const ready=Object.values(d).every(Number.isFinite);
+  const trend=n=>n>0?'增加':n<0?'減少':'持平';
+  const seller=ready?`SC ${trend(d.SC)} ${plain(Math.abs(d.SC))} 口；SP ${trend(d.SP)} ${plain(Math.abs(d.SP))} 口。${d.SC<0&&d.SP<0?'兩側賣方未平倉都縮減，不能直接解讀為新增多單。':d.SC>0&&d.SP>0?'兩側賣方未平倉都增加，可能同時存在不同策略。':d.SC===0&&d.SP===0?'賣方兩側皆持平。':'兩側變化方向不同，先觀察各自的增減。'}`:'缺少相鄰交易日完整資料，暫不判讀。';
+  const buyer=ready?`BC ${trend(d.BC)} ${plain(Math.abs(d.BC))} 口；BP ${trend(d.BP)} ${plain(Math.abs(d.BP))} 口。${d.BC<0&&d.BP<0?'買方兩側未平倉都縮減。':d.BC>0&&d.BP>0?'買方兩側未平倉都增加。':'買方兩側變化不一致或持平。'}`:'缺少相鄰交易日完整資料，暫不判讀。';
+  let summary='資料不足',detail='無法比較四種部位。';
+  if(ready){
+   const signs=Object.values(d).map(Math.sign);
+   if(signs.every(x=>x<0)){summary='四類部位同步減倉';detail='BC、SC、BP、SP 未平倉都下降。先視為整體縮減，不能只因某一側減少較多就判定翻多或翻空。';}
+   else if(signs.every(x=>x>0)){summary='四類部位同步增倉';detail='四類部位均增加，但不能確認是方向性建倉或組合策略。';}
+   else if(signs.every(x=>x===0)){summary='四類部位持平';detail='未觀察到口數變化。';}
+   else {const bull=d.BC+d.SP,bear=d.BP+d.SC;summary='多空部位變化交錯';detail=`僅依方向分類的參考合計：BC＋SP＝${optionDiff(bull)} 口，BP＋SC＝${optionDiff(bear)} 口。因包含減倉負值，且未經 Delta 調整，不代表實際淨多空曝險。`;}
+  }
+  const possibility=ready?`SC 與 BC ${Math.sign(d.SC)===Math.sign(d.BC)&&d.SC!==0?'同向變化':'未同向變化'}；SP 與 BP ${Math.sign(d.SP)===Math.sign(d.BP)&&d.SP!==0?'同向變化':'未同向變化'}。這只能提示是否值得查看價差／避險可能性，不能證實部位已配對。`:'資料不足，無法觀察組合跡象。';
+  const cells=['SC','SP','BC','BP'].map(k=>`<tr><td>${k}</td><td>${optionNum(now[k])}</td><td class="${optionDiffClass(d[k])}">${optionDiff(d[k])}</td></tr>`).join('');
+  return `<div class="referenceCard"><h3>${labels[a]}｜獨立分析</h3><div class="referenceStep"><strong>① SC／SP 賣方先比較</strong><p>${seller}</p></div><div class="referenceStep"><strong>② BC／BP 買方再驗證</strong><p>${buyer}</p></div><div class="referenceStep"><strong>③ 可能的價差／避險跡象</strong><p>${possibility}</p></div><div class="referenceStep"><strong>④ 選擇權小結</strong><div class="referenceVerdict">${summary}</div><p>${detail}</p></div><div class="scroll"><table class="referenceTable"><thead><tr><th>部位</th><th>未平倉</th><th>日變化</th></tr></thead><tbody>${cells}</tbody></table></div></div>`;
  }
- const fut=['大台','小台'].map(k=>{
-  const arr=DATA[k]||[],today=arr.find(x=>x.date===r.date),prior=arr.find(x=>x.date===prev?.date);
-  const ok=valid&&today&&prior&&Number.isFinite(today[actor+'Long'])&&Number.isFinite(today[actor+'Short'])&&Number.isFinite(prior[actor+'Long'])&&Number.isFinite(prior[actor+'Short']);
-  const d=ok?net(today,actor)-net(prior,actor):null;
-  return {name:k,delta:d,net:today&&Number.isFinite(today[actor+'Long'])&&Number.isFinite(today[actor+'Short'])?net(today,actor):null};
- });
- const futAvailable=fut.filter(x=>x.delta!==null);
- const futText=futAvailable.length===2?(Math.sign(fut[0].delta)===Math.sign(fut[1].delta)&&fut[0].delta!==0?(fut[0].delta>0?'大台、小台淨部位均增加':'大台、小台淨部位均減少'):'大台、小台變化方向不一致或持平'):'期貨比較資料不足';
- const signal=hasOptions&&same(sellScore,buyScore)?Math.sign(sellScore):0;
- const align=futAvailable.length===2&&signal!==0?(fut.every(x=>Math.sign(x.delta)===signal)?'期貨與選擇權方向一致':fut.every(x=>Math.sign(x.delta)===-signal)?'期貨與選擇權方向相反':'期貨與選擇權部分分歧'):'不判定跨商品一致性';
- host.innerHTML=`<div class="referenceGrid"><div class="referenceCard"><h3>① 賣方先比較：SC／SP</h3><p>SC 日變化：<strong>${optionDiff(delta.SC)}</strong> 口</p><p>SP 日變化：<strong>${optionDiff(delta.SP)}</strong> 口</p><p>SP 變化 − SC 變化：<strong>${optionDiff(sellScore)}</strong> 口</p><p class="referenceMuted">相對判讀：${sellSignal}</p></div><div class="referenceCard"><h3>② 買方再比較：BC／BP</h3><p>BC 日變化：<strong>${optionDiff(delta.BC)}</strong> 口</p><p>BP 日變化：<strong>${optionDiff(delta.BP)}</strong> 口</p><p>BC 變化 − BP 變化：<strong>${optionDiff(buyScore)}</strong> 口</p><p class="referenceMuted">相對判讀：${buySignal}</p></div><div class="referenceCard"><h3>③ 選擇權交叉觀察</h3><div class="referenceVerdict">${verdict}</div><p>${detail}</p><div class="scroll"><table class="referenceTable"><thead><tr><th>部位</th><th>當日未平倉</th><th>日變化</th></tr></thead><tbody>${rows}</tbody></table></div></div><div class="referenceCard"><h3>④ 期貨方向對照（不跨商品加總）</h3>${fut.map(x=>`<p>${x.name}：淨未平倉 ${optionDiff(x.net)} 口；淨變化 <strong>${optionDiff(x.delta)}</strong> 口</p>`).join('')}<p class="referenceMuted">${futText}</p><p><strong>${align}</strong></p></div></div><p class="referenceNote">判讀方法：比較四類部位的「未平倉日變化」，不是把 BC、SP 與期貨多單直接相加。負數表示原有部位減少，可能涉及平倉或轉倉，不能視為反向新倉；不同履約價、到期月份與 Delta 未調整，故此處只能做相對籌碼參考，無法證實價差鎖單或避險策略。期貨大台與小台僅分別對照，不以口數直接相加。</p>`;
+ const fut=['大台','小台'].map(k=>{const arr=DATA[k]||[];return {name:k,actors:['foreign','self'].map(a=>{const t=arr.find(x=>x.date===r.date),p=arr.find(x=>x.date===prev?.date);const ok=valid&&t&&p&&[t[a+'Long'],t[a+'Short'],p[a+'Long'],p[a+'Short']].every(Number.isFinite);return {name:labels[a],net:t&&Number.isFinite(t[a+'Long'])&&Number.isFinite(t[a+'Short'])?net(t,a):null,delta:ok?net(t,a)-net(p,a):null};})}});
+ host.innerHTML=`<div class="referenceGrid">${analyze('self')}${analyze('foreign')}</div><div class="referenceCard" style="margin-top:12px"><h3>期貨另外觀察｜不併入選擇權結論</h3><div class="scroll"><table class="referenceTable"><thead><tr><th>商品</th><th>法人</th><th>淨未平倉</th><th>淨部位日變化</th></tr></thead><tbody>${fut.map(x=>x.actors.map(a=>`<tr><td>${x.name}</td><td>${a.name}</td><td>${optionDiff(a.net)}</td><td>${optionDiff(a.delta)}</td></tr>`).join('')).join('')}</tbody></table></div><p class="referenceMuted">大台、小台各自觀察，並不與選擇權口數直接加總；期貨淨部位增加也不必然代表新增多單。</p></div><p class="referenceNote">資料事實：未平倉與相鄰交易日差額。老師文件提示：SC／SP 先比較，再對照 BC／BP 是否可能鎖避險。系統推論：上述四步觀察文字與分類。因無逐筆配對、履約價、到期月份及 Delta，不能確定實際避險、價差策略或交易方向。</p>`;
 }
 
 function renderOptions(){
