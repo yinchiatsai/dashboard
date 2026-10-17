@@ -1,7 +1,9 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>台指期籌碼分析儀表板</title><style>
 :root{font-family:system-ui,-apple-system,'Noto Sans TC',sans-serif;color:#e8eef7;background:#0b1220}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1220px;margin:auto;padding:24px}header{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:24px}h1{font-size:26px;margin:6px 0}h2{font-size:17px;margin:0 0 16px}.sub,.muted{color:#9cabc0;font-size:13px}.badge{padding:7px 11px;background:#293247;border-radius:20px;color:#f3cb83;font-size:12px}.panel{background:#151f31;border:1px solid #29364a;border-radius:17px;padding:20px;margin:16px 0}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}button,select,input{background:#202d43;color:#edf2f9;border:1px solid #35455c;border-radius:9px;padding:10px 13px;font-size:14px}button{cursor:pointer}button.active{background:#355e8b;border-color:#6b9fd3}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:#151f31;border:1px solid #29364a;border-radius:15px;padding:19px}.metric .number{font-size:29px;font-weight:750;letter-spacing:-.8px;margin-top:9px}.red{color:#f38c90}.green{color:#69d7b1}.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}.chart{width:100%;height:260px;display:block}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:12px 9px;text-align:right;border-bottom:1px solid #2a3649}th:first-child,td:first-child{text-align:left}th{color:#9cabc0;font-weight:500}a{color:#9fcaf5}.notice{background:#282b34;border-left:3px solid #e7b96a;padding:12px 15px;font-size:13px;line-height:1.7;border-radius:7px}.small{font-size:12px;line-height:1.7}.scroll{overflow:auto}@media(max-width:800px){.wrap{padding:14px}.metrics{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.metric .number{font-size:22px}.panel{padding:14px}h1{font-size:22px}}
 .optionTable th,.optionTable td{white-space:nowrap}.optionTable th[colspan]{text-align:center}.optionTable .cp{font-weight:750;color:#f3cb83}.optionCompare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.compareBox{padding:15px;border:1px solid #33445e;border-radius:12px;background:#19263a}.compareRow{display:grid;grid-template-columns:62px 1fr 90px;align-items:center;gap:10px;margin:9px 0}.compareTrack{height:12px;background:#2b374b;border-radius:20px;overflow:hidden}.compareFill{height:100%;border-radius:20px}.compareTitle{font-weight:700;margin-bottom:12px}.pos{color:#69d7b1}.neg{color:#f38c90}@media(max-width:800px){.optionCompare{grid-template-columns:1fr}.optionTable{font-size:12px}}
-</style></head><body><div class="wrap"><header><div><div class="sub">TAIWAN FUTURES · POSITION INTELLIGENCE</div><h1>台指期籌碼分析儀表板 V6｜Excel 選擇權整合</h1><div class="sub">以你的原始 Excel 歷史資料建立 · 多空未平倉 / 每日變化 / 結算週期</div></div><span class="badge">官方資料連線版 · 資料依期交所公布</span></header>
+
+.referenceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}.referenceCard{border:1px solid #33445e;border-radius:12px;background:#19263a;padding:14px}.referenceCard h3{margin:0 0 9px;font-size:14px}.referenceCard p{margin:6px 0;font-size:13px;line-height:1.7}.referenceVerdict{font-size:20px;font-weight:750;margin:8px 0}.referenceTable th,.referenceTable td{white-space:nowrap}.referenceTable td:first-child{font-weight:650}.referenceMuted{color:#9cabc0}.referenceNote{font-size:12px;color:#aebbd0;line-height:1.8;margin-top:10px}@media(max-width:800px){.referenceGrid{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><header><div><div class="sub">TAIWAN FUTURES · POSITION INTELLIGENCE</div><h1>台指期籌碼分析儀表板 V8｜法人多空籌碼參考</h1><div class="sub">以你的原始 Excel 歷史資料建立 · 多空未平倉 / 每日變化 / 結算週期</div></div><span class="badge">官方資料連線版 · 資料依期交所公布</span></header>
 <div class="notice">開啟網頁時會自動讀取官方歷史資料；若連線失敗，可按「取得官方最新資料」重試。歷史資料與新資料不會跨缺漏日期直接計算每日變化；選擇權官方資料依 CALL／PUT 分開呈現，不混合計算；原 Excel 選擇權資料僅供舊版歷史參考。</div>
 <section class="panel"><div class="toolbar"><button id="loadLive" style="background:#286c65;border-color:#409d90">取得官方最新資料</button><button id="historyMode">查看原 Excel 歷史</button><label class="muted">官方歷史範圍 <select id="historyDays"><option value="30">近 1 個月</option><option value="90" selected>近 3 個月</option><option value="180">近 6 個月</option></select></label><span id="liveStatus" class="sub">準備自動讀取官方資料…</span></div><div class="sub" style="margin-top:9px">開啟網頁時自動讀取官方資料，也可手動重新整理；每日背景擷取是否成功，仍取決於 Apps Script 排程。</div></section>
 <section class="panel"><div class="toolbar"><strong>商品</strong><button class="tab active" data-product="大台">大台 TX</button><button class="tab" data-product="小台">小台 MTX</button><button class="tab" data-product="選擇權">選擇權 C／P</button><button class="tab" data-product="總表">法人總表</button><span style="flex:1"></span><label class="muted">法人 <select id="actor"><option value="foreign">外資</option><option value="self">自營商</option><option value="trust">投信</option></select></label><label class="muted">截至 <select id="date"></select></label></div><div class="sub" id="coverage" style="margin-top:12px"></div></section>
@@ -15,6 +17,7 @@
 <p class="sub">同一交易日分開比較買權（CALL／C）及賣權（PUT／P）；買方、賣方未平倉口數及契約金額皆保留。每日變化為相鄰交易日的未平倉差額，並非當日新開倉量。</p>
 <div class="scroll"><table class="optionTable"><thead><tr><th rowspan="2">類型</th><th colspan="2">買方未平倉</th><th colspan="2">賣方未平倉</th><th colspan="2">相較前交易日</th></tr><tr><th>口數</th><th>契約金額（千元）</th><th>口數</th><th>契約金額（千元）</th><th>買方口數變化</th><th>賣方口數變化</th></tr></thead><tbody id="optionSummary"></tbody></table></div>
 <div id="optionCompare" class="optionCompare"></div>
+<section id="referenceSection" style="margin-top:22px"><h2>法人多空籌碼參考｜SC／SP → BC／BP → 期貨</h2><p class="sub">依目前選擇的日期與法人，對照未平倉「日變化」。正值＝部位增加；負值＝部位減少。僅供觀察，不代表實際買賣訊號。</p><div id="referenceResult"></div></section>
 <h2 style="margin-top:28px">每日選擇權籌碼明細</h2><p class="sub">與 Excel 一樣，每個交易日依序列出 C、P；可透過上方「法人」切換外資、自營商或投信。</p>
 <div class="scroll"><table class="optionTable"><thead><tr><th>日期</th><th>C／P</th><th>買方口數</th><th>買方契約金額（千元）</th><th>賣方口數</th><th>賣方契約金額（千元）</th><th>買方日變化</th><th>賣方日變化</th></tr></thead><tbody id="optionHistory"></tbody></table></div>
 <p id="optionFootnote" class="small muted"></p>
@@ -28,10 +31,42 @@ function optionNum(n){return n==null?'—':plain(n)}
 function optionDiff(n){return n==null?'—':fmt(n)}
 function optionDiffClass(n){return n==null?'':n<0?'neg':n>0?'pos':''}
 function optionPair(day,actor){const r=DATA.選擇權.find(x=>x.date===day);return r?{C:r.C?.[actor],P:r.P?.[actor]}:null}
+function renderReference(r,prev,valid,actor){
+ const host=$('referenceResult');
+ const cpNow={BC:r.C?.[actor]?.long,SC:r.C?.[actor]?.short,BP:r.P?.[actor]?.long,SP:r.P?.[actor]?.short};
+ const cpPrev={BC:prev?.C?.[actor]?.long,SC:prev?.C?.[actor]?.short,BP:prev?.P?.[actor]?.long,SP:prev?.P?.[actor]?.short};
+ const delta={};
+ for(const k of ['BC','SC','BP','SP'])delta[k]=valid&&Number.isFinite(cpNow[k])&&Number.isFinite(cpPrev[k])?cpNow[k]-cpPrev[k]:null;
+ const hasOptions=Object.values(delta).every(Number.isFinite);
+ const rows=['SC','SP','BC','BP'].map(k=>`<tr><td>${k}</td><td>${optionNum(cpNow[k])}</td><td class="${optionDiffClass(delta[k])}">${optionDiff(delta[k])}</td></tr>`).join('');
+ const sellScore=hasOptions?delta.SP-delta.SC:null;
+ const buyScore=hasOptions?delta.BC-delta.BP:null;
+ const sellSignal=sellScore==null?'資料不足':sellScore>0?'相對偏多':sellScore<0?'相對偏空':'無明顯差異';
+ const buySignal=buyScore==null?'資料不足':buyScore>0?'相對偏多':buyScore<0?'相對偏空':'無明顯差異';
+ const same=(a,b)=>a!==0&&b!==0&&Math.sign(a)===Math.sign(b);
+ let verdict='資料不足',detail='缺少相鄰交易日的完整 CALL／PUT 資料，暫不推算方向。';
+ if(hasOptions){
+  if(sellScore===0&&buyScore===0){verdict='方向不明';detail='SC／SP 與 BC／BP 的相對增減皆相同。';}
+  else if(same(sellScore,buyScore)){verdict=sellScore>0?'選擇權相對偏多':'選擇權相對偏空';detail='賣方與買方的相對部位變化方向一致；仍無法據此認定是新開倉或特定避險組合。';}
+  else{verdict='選擇權訊號分歧';detail='賣方與買方相對變化方向不一致，或其中一側無差異；不做單一多空判定。';}
+ }
+ const fut=['大台','小台'].map(k=>{
+  const arr=DATA[k]||[],today=arr.find(x=>x.date===r.date),prior=arr.find(x=>x.date===prev?.date);
+  const ok=valid&&today&&prior&&Number.isFinite(today[actor+'Long'])&&Number.isFinite(today[actor+'Short'])&&Number.isFinite(prior[actor+'Long'])&&Number.isFinite(prior[actor+'Short']);
+  const d=ok?net(today,actor)-net(prior,actor):null;
+  return {name:k,delta:d,net:today&&Number.isFinite(today[actor+'Long'])&&Number.isFinite(today[actor+'Short'])?net(today,actor):null};
+ });
+ const futAvailable=fut.filter(x=>x.delta!==null);
+ const futText=futAvailable.length===2?(Math.sign(fut[0].delta)===Math.sign(fut[1].delta)&&fut[0].delta!==0?(fut[0].delta>0?'大台、小台淨部位均增加':'大台、小台淨部位均減少'):'大台、小台變化方向不一致或持平'):'期貨比較資料不足';
+ const signal=hasOptions&&same(sellScore,buyScore)?Math.sign(sellScore):0;
+ const align=futAvailable.length===2&&signal!==0?(fut.every(x=>Math.sign(x.delta)===signal)?'期貨與選擇權方向一致':fut.every(x=>Math.sign(x.delta)===-signal)?'期貨與選擇權方向相反':'期貨與選擇權部分分歧'):'不判定跨商品一致性';
+ host.innerHTML=`<div class="referenceGrid"><div class="referenceCard"><h3>① 賣方先比較：SC／SP</h3><p>SC 日變化：<strong>${optionDiff(delta.SC)}</strong> 口</p><p>SP 日變化：<strong>${optionDiff(delta.SP)}</strong> 口</p><p>SP 變化 − SC 變化：<strong>${optionDiff(sellScore)}</strong> 口</p><p class="referenceMuted">相對判讀：${sellSignal}</p></div><div class="referenceCard"><h3>② 買方再比較：BC／BP</h3><p>BC 日變化：<strong>${optionDiff(delta.BC)}</strong> 口</p><p>BP 日變化：<strong>${optionDiff(delta.BP)}</strong> 口</p><p>BC 變化 − BP 變化：<strong>${optionDiff(buyScore)}</strong> 口</p><p class="referenceMuted">相對判讀：${buySignal}</p></div><div class="referenceCard"><h3>③ 選擇權交叉觀察</h3><div class="referenceVerdict">${verdict}</div><p>${detail}</p><div class="scroll"><table class="referenceTable"><thead><tr><th>部位</th><th>當日未平倉</th><th>日變化</th></tr></thead><tbody>${rows}</tbody></table></div></div><div class="referenceCard"><h3>④ 期貨方向對照（不跨商品加總）</h3>${fut.map(x=>`<p>${x.name}：淨未平倉 ${optionDiff(x.net)} 口；淨變化 <strong>${optionDiff(x.delta)}</strong> 口</p>`).join('')}<p class="referenceMuted">${futText}</p><p><strong>${align}</strong></p></div></div><p class="referenceNote">判讀方法：比較四類部位的「未平倉日變化」，不是把 BC、SP 與期貨多單直接相加。負數表示原有部位減少，可能涉及平倉或轉倉，不能視為反向新倉；不同履約價、到期月份與 Delta 未調整，故此處只能做相對籌碼參考，無法證實價差鎖單或避險策略。期貨大台與小台僅分別對照，不以口數直接相加。</p>`;
+}
+
 function renderOptions(){
  const all=DATA.選擇權||[],actor=$('actor').value,sel=Number($('date').value);
  $('futuresView').style.display='none';$('optionsView').style.display='block';
- if(!all.length){$('coverage').textContent=live?'官方選擇權資料尚未解析出可顯示的交易日，請檢查來源契約與欄位':'請先按「取得官方最新資料」讀取 2026 年選擇權資料';$('optionSummary').innerHTML='';$('optionHistory').innerHTML='';$('optionCompare').innerHTML='';return;}
+ if(!all.length){$('coverage').textContent=live?'官方選擇權資料尚未解析出可顯示的交易日，請檢查來源契約與欄位':'請先按「取得官方最新資料」讀取 2026 年選擇權資料';$('optionSummary').innerHTML='';$('optionHistory').innerHTML='';$('optionCompare').innerHTML='';$('referenceResult').innerHTML='<p class="sub">尚無可比較的官方選擇權資料。</p>';return;}
  const idx=Number.isInteger(sel)&&sel>=0&&sel<all.length?sel:all.length-1,r=all[idx],prev=idx>0?all[idx-1]:null,valid=validPair(prev,r);
  $('coverage').textContent=`選擇權資料：${all[0].date} ～ ${all.at(-1).date}，共 ${all.length} 個交易日；目前顯示 ${r.date}`;
  function cell(cp){const v=r[cp]?.[actor],p=valid?prev[cp]?.[actor]:null;if(!v)return `<tr><td class="cp">${cp==='C'?'CALL（C）':'PUT（P）'}</td><td colspan="6">此日期無該法人資料</td></tr>`;
@@ -42,6 +77,7 @@ function renderOptions(){
  function compare(field,label){const cv=c?.[field],pv=p?.[field],max=Math.max(cv||0,pv||0,1);return `<div class="compareBox"><div class="compareTitle">${label}｜CALL 與 PUT</div>${[['C',cv,'#79b8ee'],['P',pv,'#f3b36b']].map(([name,value,color])=>`<div class="compareRow"><strong>${name==='C'?'CALL':'PUT'}</strong><div class="compareTrack"><div class="compareFill" style="width:${value==null?0:value/max*100}%;background:${color}"></div></div><span style="text-align:right">${optionNum(value)}</span></div>`).join('')}</div>`;}
  $('optionCompare').innerHTML=compare('long','買方未平倉口數')+compare('short','賣方未平倉口數');
  $('optionHistory').innerHTML=all.slice(Math.max(0,idx-14),idx+1).reverse().map(x=>{const j=all.indexOf(x),pr=j>0?all[j-1]:null,ok=validPair(pr,x);return ['C','P'].map(cp=>{const v=x[cp]?.[actor],pv=ok?pr[cp]?.[actor]:null,dl=v&&pv?v.long-pv.long:null,ds=v&&pv?v.short-pv.short:null;return `<tr><td>${x.date}</td><td class="cp">${cp}</td><td>${optionNum(v?.long)}</td><td>${optionNum(v?.longValue)}</td><td>${optionNum(v?.short)}</td><td>${optionNum(v?.shortValue)}</td><td class="${optionDiffClass(dl)}">${optionDiff(dl)}</td><td class="${optionDiffClass(ds)}">${optionDiff(ds)}</td></tr>`;}).join('')}).join('');
+ renderReference(r,prev,valid,actor);
  $('optionFootnote').textContent='契約金額單位為期交所原始欄位的「千元」；不將 CALL 與 PUT 口數加總當作方向性淨部位。若相鄰交易日資料缺漏，變化欄顯示「—」。';
 }
 function render(){if(product==='選擇權'){renderOptions();return;}let all=DATA[product]||[],actor=$('actor').value,idx=Number($('date').value);if(!all.length){['long','short','net','change','period','longDelta','shortDelta','deltaCheck'].forEach(k=>$(k).textContent='—');$('coverage').textContent='此分類尚無可顯示資料';$('rows').innerHTML='';$('chart').innerHTML='';return;}idx=Number.isInteger(idx)&&idx>=0&&idx<all.length?idx:all.length-1;let r=all[idx],prev=all[idx-1],n=net(r,actor),change=prev?n-net(prev,actor):0,adjacent=prev&&(new Date(r.date)-new Date(prev.date)<=4*86400000);if(r[actor+'Long']==null||r[actor+'Short']==null){['long','short','net','change','period','longDelta','shortDelta','deltaCheck'].forEach(k=>$(k).textContent='—');$('coverage').textContent='所選法人在此資料來源沒有可核對的持倉欄位';$('rows').innerHTML='';$('chart').innerHTML='';return;}$('long').textContent=plain(r[actor+'Long']);$('short').textContent=plain(r[actor+'Short']);$('net').textContent=fmt(n);cls($('net'),n);$('change').textContent=adjacent?fmt(change):'—';cls($('change'),change);$('coverage').textContent=`資料涵蓋：${all[0].date} ～ ${all.at(-1).date}，共 ${all.length} 個交易日；目前顯示 ${r.date}`;const dl=adjacent?r[actor+'Long']-prev[actor+'Long']:null,ds=adjacent?r[actor+'Short']-prev[actor+'Short']:null;
